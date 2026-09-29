@@ -7,4 +7,5 @@
     <dt>Longitude</dt>
     <dd>{{ marker.longitude | number: '1.4-4' }}</dd>
   </dl>
+  <button type="button" class="delete" (click)="deleteMarker(marker)">Delete</button>
 }

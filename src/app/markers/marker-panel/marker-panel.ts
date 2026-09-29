@@ -2,7 +2,8 @@ import { DecimalPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Store } from '@ngxs/store';
 
-import { SelectMarker } from '../state/markers.actions';
+import { Marker } from '../marker.model';
+import { DeleteMarker, SelectMarker } from '../state/markers.actions';
 import { MarkersState } from '../state/markers.state';
 
 @Component({
@@ -21,5 +22,11 @@ export class MarkerPanel {
 
   protected close(): void {
     this.store.dispatch(new SelectMarker(null));
+  }
+
+  protected deleteMarker(marker: Marker): void {
+    if (window.confirm(`Delete "${marker.name}"?`)) {
+      this.store.dispatch(new DeleteMarker(marker.id));
+    }
   }
 }
