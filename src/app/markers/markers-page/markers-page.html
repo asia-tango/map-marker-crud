@@ -1,16 +1,18 @@
 <app-map-view
-  [draft]="createAt()"
+  [draft]="draftPoint()"
   (markerClicked)="onMarkerClicked($event)"
   (mapClicked)="onMapClicked($event)"
 ></app-map-view>
-@if (createAt(); as point) {
+@if (draft(); as draft) {
   <app-marker-form
     class="sidebar"
-    [latitude]="point.latitude"
-    [longitude]="point.longitude"
+    [heading]="draft.mode === 'create' ? 'New marker' : 'Edit marker'"
+    [name]="draft.name"
+    [latitude]="draft.latitude"
+    [longitude]="draft.longitude"
     (saved)="onSaved($event)"
     (cancelled)="onCancelled()"
   ></app-marker-form>
 } @else if (selectedMarker()) {
-  <app-marker-panel class="sidebar"></app-marker-panel>
+  <app-marker-panel class="sidebar" (edit)="onEdit()"></app-marker-panel>
 }

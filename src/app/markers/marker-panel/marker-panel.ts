@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, output } from '@angular/core';
 import { Store } from '@ngxs/store';
 
 import { COORDINATE_DECIMALS, Marker } from '../marker.model';
@@ -20,6 +20,8 @@ export class MarkerPanel {
 
   protected readonly marker = this.store.selectSignal(MarkersState.selectedMarker);
   protected readonly coordinateFormat = `1.${COORDINATE_DECIMALS}-${COORDINATE_DECIMALS}`;
+
+  readonly edit = output<void>();
 
   protected close(): void {
     this.store.dispatch(new SelectMarker(null));

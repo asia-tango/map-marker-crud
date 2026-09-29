@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, output } from '@angular/core';
+import { Component, OnInit, effect, inject, input, output } from '@angular/core';
 import {
   AbstractControl,
   NonNullableFormBuilder,
@@ -24,7 +24,8 @@ function notBlank(control: AbstractControl<string>): ValidationErrors | null {
   templateUrl: './marker-form.html',
   styleUrl: './marker-form.scss',
 })
-export class MarkerForm {
+export class MarkerForm implements OnInit {
+  readonly heading = input.required<string>();
   readonly latitude = input.required<number>();
   readonly longitude = input.required<number>();
   readonly name = input('');
@@ -39,11 +40,14 @@ export class MarkerForm {
   });
 
   constructor() {
-    // Separate effects, so a new map click moves the point without resetting the typed name.
-    effect(() => this.form.controls.name.setValue(this.name()));
+    // Only the coordinates follow the inputs, so a map click never overwrites the typed name.
     effect(() =>
       this.form.patchValue({ latitude: this.latitude(), longitude: this.longitude() }),
     );
+  }
+
+  ngOnInit(): void {
+    this.form.controls.name.setValue(this.name());
   }
 
   protected submit(): void {
