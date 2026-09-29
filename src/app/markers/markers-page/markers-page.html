@@ -1,4 +1,16 @@
-<app-map-view></app-map-view>
-@if (selectedMarker()) {
-  <app-marker-panel></app-marker-panel>
+<app-map-view
+  [draft]="createAt()"
+  (markerClicked)="onMarkerClicked($event)"
+  (mapClicked)="onMapClicked($event)"
+></app-map-view>
+@if (createAt(); as point) {
+  <app-marker-form
+    class="sidebar"
+    [latitude]="point.latitude"
+    [longitude]="point.longitude"
+    (saved)="onSaved($event)"
+    (cancelled)="onCancelled()"
+  ></app-marker-form>
+} @else if (selectedMarker()) {
+  <app-marker-panel class="sidebar"></app-marker-panel>
 }

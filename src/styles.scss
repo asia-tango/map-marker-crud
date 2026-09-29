@@ -3,3 +3,59 @@ html, body { margin: 0; height: 100%; }
 
 /* The marker panel covers the bottom-right corner, so keep the attribution at the bottom-left. */
 .ol-attribution.ol-uncollapsible { left: 0; right: auto; border-radius: 0 4px 0 0; }
+
+/*
+ * Buttons shared by the marker panel and the marker form.
+ * Scoped to .sidebar so the OpenLayers controls (zoom buttons) keep their own look.
+ */
+.sidebar button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #9e9e9e;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #212121;
+  font: inherit;
+  cursor: pointer;
+}
+
+.sidebar button:focus-visible {
+  outline: 2px solid #1976d2;
+  outline-offset: 2px;
+}
+
+.sidebar button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sidebar .primary {
+  border-color: #1976d2;
+  background: #1976d2;
+  color: #ffffff;
+}
+
+.sidebar .danger {
+  border-color: #d32f2f;
+  background: #d32f2f;
+  color: #ffffff;
+}
+
+.sidebar .close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.sidebar .close:hover,
+.sidebar .close:focus-visible {
+  background: #e0e0e0;
+  outline: none;
+}

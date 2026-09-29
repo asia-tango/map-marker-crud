@@ -1,0 +1,38 @@
+:host {
+  display: block;
+}
+
+h2 {
+  margin: 0 2rem 1rem 0;
+}
+
+.field {
+  margin-bottom: 0.75rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: bold;
+}
+
+input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem;
+  border: 1px solid #9e9e9e;
+  border-radius: 4px;
+  font: inherit;
+}
+
+.error {
+  margin: 0.25rem 0 0;
+  color: #d32f2f;
+  font-size: 0.875rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}

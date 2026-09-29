@@ -16,7 +16,7 @@ import Style from 'ol/style/Style';
 import Text from 'ol/style/Text';
 import { Observable, Subject } from 'rxjs';
 
-import { Marker } from '../marker.model';
+import { COORDINATE_DECIMALS, Marker } from '../marker.model';
 
 export type MapClick =
   | { kind: 'marker'; id: string }
@@ -38,14 +38,25 @@ const SELECTED_POINT_IMAGE = new CircleStyle({
   stroke: new Stroke({ color: '#ffffff', width: 2 }),
 });
 
+const DRAFT_STYLE = new Style({
+  image: new CircleStyle({
+    radius: 7,
+    fill: new Fill({ color: '#00c853' }),
+    stroke: new Stroke({ color: '#ffffff', width: 2 }),
+  }),
+});
+
 @Injectable()
 export class MarkerMapService {
   private readonly source = new VectorSource<Feature<Point>>();
-  private readonly vectorLayer = new VectorLayer({ source: this.source });
+  private readonly markersLayer = new VectorLayer({ source: this.source });
+  private readonly draftSource = new VectorSource<Feature<Point>>();
+  private readonly draftLayer = new VectorLayer({ source: this.draftSource, style: DRAFT_STYLE });
   private readonly map = new OlMap({
-    layers: [new TileLayer({ source: new OSM() }), this.vectorLayer],
+    layers: [new TileLayer({ source: new OSM() }), this.markersLayer, this.draftLayer],
     view: new View({ center: INITIAL_CENTER, zoom: INITIAL_ZOOM }),
   });
+  private draftFeature: Feature<Point> | null = null;
 
   private readonly features = new Map<string, Feature<Point>>();
   private readonly renderedMarkers = new Map<string, Marker>();
@@ -57,13 +68,14 @@ export class MarkerMapService {
   private readonly clickListener = this.map.on('singleclick', (event) => {
     const id = this.map.forEachFeatureAtPixel(event.pixel, (feature) => feature.getId(), {
       hitTolerance: HIT_TOLERANCE,
-      layerFilter: (layer) => layer === this.vectorLayer,
+      // Only the markers layer: the draft point must never count as a marker.
+      layerFilter: (layer) => layer === this.markersLayer,
     });
 
     if (typeof id === 'string') {
       this.clicksSubject.next({ kind: 'marker', id });
     } else {
-      const [longitude, latitude] = toLonLat(event.coordinate);
+      const [longitude, latitude] = toLonLat(event.coordinate).map(roundCoordinate);
       this.clicksSubject.next({ kind: 'empty', latitude, longitude });
     }
   });
@@ -108,6 +120,18 @@ export class MarkerMapService {
     this.restyle(id);
   }
 
+  setDraft(coords: Pick<Marker, 'latitude' | 'longitude'> | null): void {
+    if (!coords) {
+      this.draftSource.clear();
+      this.draftFeature = null;
+    } else if (this.draftFeature) {
+      this.draftFeature.getGeometry()?.setCoordinates(toCoordinate(coords));
+    } else {
+      this.draftFeature = new Feature(new Point(toCoordinate(coords)));
+      this.draftSource.addFeature(this.draftFeature);
+    }
+  }
+
   destroy(): void {
     unByKey(this.clickListener);
     this.clicksSubject.complete();
@@ -139,8 +163,13 @@ export class MarkerMapService {
   }
 }
 
-function toCoordinate(marker: Marker): number[] {
-  return fromLonLat([marker.longitude, marker.latitude]);
+function roundCoordinate(value: number): number {
+  const factor = 10 ** COORDINATE_DECIMALS;
+  return Math.round(value * factor) / factor;
+}
+
+function toCoordinate({ latitude, longitude }: Pick<Marker, 'latitude' | 'longitude'>): number[] {
+  return fromLonLat([longitude, latitude]);
 }
 
 function createStyle(name: string, selected: boolean): Style {

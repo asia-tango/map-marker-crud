@@ -3,9 +3,9 @@
   <h2>{{ marker.name }}</h2>
   <dl>
     <dt>Latitude</dt>
-    <dd>{{ marker.latitude | number: '1.4-4' }}</dd>
+    <dd>{{ marker.latitude | number: coordinateFormat }}</dd>
     <dt>Longitude</dt>
-    <dd>{{ marker.longitude | number: '1.4-4' }}</dd>
+    <dd>{{ marker.longitude | number: coordinateFormat }}</dd>
   </dl>
-  <button type="button" class="delete" (click)="deleteMarker(marker)">Delete</button>
+  <button type="button" class="danger" (click)="deleteMarker(marker)">Delete</button>
 }

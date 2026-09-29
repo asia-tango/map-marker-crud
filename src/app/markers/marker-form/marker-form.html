@@ -1,0 +1,39 @@
+<button type="button" class="close" aria-label="Close" (click)="cancel()">×</button>
+<h2>New marker</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div class="field">
+    <label for="marker-name">Name</label>
+    <input id="marker-name" type="text" formControlName="name" />
+    @if (form.controls.name.touched && form.controls.name.invalid) {
+      <p class="error">
+        @if (form.controls.name.hasError('maxlength')) {
+          Name must be at most 100 characters.
+        } @else {
+          Name is required.
+        }
+      </p>
+    }
+  </div>
+
+  <div class="field">
+    <label for="marker-latitude">Latitude</label>
+    <input id="marker-latitude" type="number" step="any" formControlName="latitude" />
+    @if (form.controls.latitude.touched && form.controls.latitude.invalid) {
+      <p class="error">Enter a latitude between -90 and 90.</p>
+    }
+  </div>
+
+  <div class="field">
+    <label for="marker-longitude">Longitude</label>
+    <input id="marker-longitude" type="number" step="any" formControlName="longitude" />
+    @if (form.controls.longitude.touched && form.controls.longitude.invalid) {
+      <p class="error">Enter a longitude between -180 and 180.</p>
+    }
+  </div>
+
+  <div class="actions">
+    <button type="submit" class="primary" [disabled]="form.invalid">Save</button>
+    <button type="button" (click)="cancel()">Cancel</button>
+  </div>
+</form>

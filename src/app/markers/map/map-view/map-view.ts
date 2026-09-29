@@ -5,13 +5,13 @@ import {
   afterNextRender,
   effect,
   inject,
+  input,
   output,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Store } from '@ngxs/store';
 
 import { Marker } from '../../marker.model';
-import { SelectMarker } from '../../state/markers.actions';
 import { MarkersState } from '../../state/markers.state';
 import { MarkerMapService } from '../marker-map.service';
 
@@ -34,6 +34,9 @@ export class MapView {
   private readonly markers = this.store.selectSignal(MarkersState.markers);
   private readonly selectedMarker = this.store.selectSignal(MarkersState.selectedMarker);
 
+  readonly draft = input<Pick<Marker, 'latitude' | 'longitude'> | null>(null);
+
+  readonly markerClicked = output<string>();
   readonly mapClicked = output<Pick<Marker, 'latitude' | 'longitude'>>();
 
   constructor() {
@@ -42,10 +45,11 @@ export class MapView {
 
     effect(() => this.mapService.setMarkers(this.markers()));
     effect(() => this.mapService.setSelected(this.selectedMarker()?.id ?? null));
+    effect(() => this.mapService.setDraft(this.draft()));
 
     this.mapService.clicks$.pipe(takeUntilDestroyed()).subscribe((click) => {
       if (click.kind === 'marker') {
-        this.store.dispatch(new SelectMarker(click.id));
+        this.markerClicked.emit(click.id);
       } else {
         this.mapClicked.emit({ latitude: click.latitude, longitude: click.longitude });
       }
