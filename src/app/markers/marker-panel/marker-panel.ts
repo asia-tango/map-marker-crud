@@ -1,0 +1,25 @@
+import { DecimalPipe } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { Store } from '@ngxs/store';
+
+import { SelectMarker } from '../state/markers.actions';
+import { MarkersState } from '../state/markers.state';
+
+@Component({
+  selector: 'app-marker-panel',
+  imports: [DecimalPipe],
+  host: {
+    '(document:keydown.escape)': 'close()',
+  },
+  templateUrl: './marker-panel.html',
+  styleUrl: './marker-panel.scss',
+})
+export class MarkerPanel {
+  private readonly store = inject(Store);
+
+  protected readonly marker = this.store.selectSignal(MarkersState.selectedMarker);
+
+  protected close(): void {
+    this.store.dispatch(new SelectMarker(null));
+  }
+}

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
-import { MarkersPage } from './markers/markers-page';
+import { MarkersPage } from './markers/markers-page/markers-page';
 
 @Component({
   selector: 'app-markers-page',
