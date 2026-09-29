@@ -25,6 +25,7 @@ export type MapClick =
 const INITIAL_CENTER = fromLonLat([20, 50]);
 const INITIAL_ZOOM = 5;
 const HIT_TOLERANCE = 5;
+const MAX_LABEL_LENGTH = 20;
 
 const POINT_IMAGE = new CircleStyle({
   radius: 7,
@@ -172,12 +173,19 @@ function toCoordinate({ latitude, longitude }: Pick<Marker, 'latitude' | 'longit
   return fromLonLat([longitude, latitude]);
 }
 
+// Long names are shortened on the map only; the panel still shows the full name.
+function toLabel(name: string): string {
+  return name.length > MAX_LABEL_LENGTH
+    ? `${name.slice(0, MAX_LABEL_LENGTH).trimEnd()}…`
+    : name;
+}
+
 function createStyle(name: string, selected: boolean): Style {
   return new Style({
     image: selected ? SELECTED_POINT_IMAGE : POINT_IMAGE,
     zIndex: selected ? 1 : 0,
     text: new Text({
-      text: name,
+      text: toLabel(name),
       offsetY: selected ? -19 : -16,
       font: '13px sans-serif',
       fill: new Fill({ color: '#212121' }),

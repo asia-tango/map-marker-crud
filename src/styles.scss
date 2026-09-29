@@ -4,6 +4,11 @@ html, body { margin: 0; height: 100%; }
 /* The marker panel covers the bottom-right corner, so keep the attribution at the bottom-left. */
 .ol-attribution.ol-uncollapsible { left: 0; right: auto; border-radius: 0 4px 0 0; }
 
+/* On mobile the bottom panel covers the bottom-left corner, so move the attribution to the top-right. */
+@media (max-width: 767px) {
+  .ol-attribution.ol-uncollapsible { top: 0; bottom: auto; right: 0; left: auto; border-radius: 0 0 0 4px; }
+}
+
 /*
  * Buttons shared by the marker panel and the marker form.
  * Scoped to .sidebar so the OpenLayers controls (zoom buttons) keep their own look.
