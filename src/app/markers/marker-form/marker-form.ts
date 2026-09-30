@@ -47,6 +47,7 @@ export class MarkerForm implements OnInit {
   }
 
   ngOnInit(): void {
+    // Read the name once: each open creates a new form, and later draft updates must not overwrite typed text.
     this.form.controls.name.setValue(this.name());
   }
 

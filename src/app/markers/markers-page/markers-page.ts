@@ -24,7 +24,6 @@ export class MarkersPage {
   protected readonly selectedMarker = this.store.selectSignal(MarkersState.selectedMarker);
   protected readonly draft = signal<MarkerDraft | null>(null);
 
-  /** The map shows a draft point only while creating a new marker. */
   protected readonly draftPoint = computed(() => {
     const draft = this.draft();
     return draft?.mode === 'create'

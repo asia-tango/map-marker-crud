@@ -1,59 +1,61 @@
-# MapMarkerCrud
+# Map markers
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.2.
+CRUD for map markers with Angular 22, NGXS and OpenLayers.
 
-## Development server
+## Requirements
 
-To start a local development server, run:
+- Node ^22.22.3, ^24.15.0 or >=26.0.0 (the versions supported by Angular 22)
 
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Getting started
 
 ```bash
-ng generate component component-name
+npm install
+npm start                    # http://localhost:4200
+npx ng test --watch=false    # unit and component tests
+npx ng lint
+npx ng build
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Features
 
-```bash
-ng generate --help
-```
+- View markers on the map.
+- Select a marker to see its details.
+- Add a marker by clicking the map, with a draft point preview.
+- Edit a marker.
+- Delete a marker with confirmation.
+- Mobile layout.
 
-## Building
+## Key decisions
 
-To build the project run:
+- The NGXS store is the single source of truth; the map only draws state and reports clicks.
+- All OpenLayers code lives in one service; components never import OpenLayers.
+- Markers on the map are updated incrementally by id instead of redrawing all of them.
+- The create/edit draft is local UI state with an explicit mode (create | edit), so invalid states are impossible; it is not in the store.
+- Coordinates are stored in degrees and rounded to 6 decimals (about 11 cm): a map click returns about 15 digits, which is false precision.
+- While the form is open, marker clicks are ignored, and while editing the map is locked, so map and marker clicks never replace an open form.
+- The details panel is on the right (inspector pattern) and moves to the bottom on mobile; the OpenStreetMap attribution always stays visible.
+- Marker names allow any characters (apostrophes, Cyrillic, etc.); they are shown only through Angular interpolation and canvas labels, so HTML is never executed (no innerHTML).
+- Native confirm for delete: simple and accessible, as the task asked to keep it simple.
+- Long labels are truncated on the map; the full name is in the panel.
+- The initial bundle budget is raised because OpenLayers is the main content of the page.
 
-```bash
-ng build
-```
+## Tests
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Unit and component tests cover the store actions and the core user flows: create, edit, cancel, delete with confirmation and form validation.
+OpenLayers rendering is not covered by these tests (there is no canvas in jsdom); it would be covered by E2E tests.
 
-## Running unit tests
+## Known limitations
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+State is in memory only, so a page reload resets the markers to the mock data (no backend or persistence was required).
 
-```bash
-ng test
-```
+## With more time
 
-## Running end-to-end tests
+- Persistence via @ngxs/storage-plugin, or a backend through NGXS actions.
+- Reverse geocoding to prefill the marker name.
+- E2E tests (for example, Playwright).
+- Clustering or a WebGL layer, and loading by visible extent, for many markers.
+- A custom confirm dialog with undo.
 
-For end-to-end (e2e) testing, run:
+## Notes
 
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Built with AI assistance (Claude Code). I reviewed each step, made the design decisions and ran all checks myself.
