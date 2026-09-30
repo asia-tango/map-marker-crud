@@ -29,6 +29,7 @@ export class MarkerForm implements OnInit {
   readonly latitude = input.required<number>();
   readonly longitude = input.required<number>();
   readonly name = input('');
+  readonly coordinatesReadonly = input(false);
 
   readonly saved = output<MarkerFormValue>();
   readonly cancelled = output<void>();

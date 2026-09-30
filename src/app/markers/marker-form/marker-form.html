@@ -18,7 +18,13 @@
 
   <div class="field">
     <label for="marker-latitude">Latitude</label>
-    <input id="marker-latitude" type="number" step="any" formControlName="latitude" />
+    <input
+      id="marker-latitude"
+      type="number"
+      step="any"
+      formControlName="latitude"
+      [readonly]="coordinatesReadonly()"
+    />
     @if (form.controls.latitude.touched && form.controls.latitude.invalid) {
       <p class="error">Enter a latitude between -90 and 90.</p>
     }
@@ -26,7 +32,13 @@
 
   <div class="field">
     <label for="marker-longitude">Longitude</label>
-    <input id="marker-longitude" type="number" step="any" formControlName="longitude" />
+    <input
+      id="marker-longitude"
+      type="number"
+      step="any"
+      formControlName="longitude"
+      [readonly]="coordinatesReadonly()"
+    />
     @if (form.controls.longitude.touched && form.controls.longitude.invalid) {
       <p class="error">Enter a longitude between -180 and 180.</p>
     }

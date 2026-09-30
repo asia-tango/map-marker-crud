@@ -33,6 +33,7 @@ npx ng build
 - The create/edit draft is local UI state with an explicit mode (create | edit), so invalid states are impossible; it is not in the store.
 - Coordinates are stored in degrees and rounded to 6 decimals (about 11 cm): a map click returns about 15 digits, which is false precision.
 - While the form is open, marker clicks are ignored, and while editing the map is locked, so map and marker clicks never replace an open form.
+- In create mode the coordinates come only from map clicks (readonly fields), so the green preview always matches what is saved; in edit mode the map is locked and coordinates are corrected in the fields.
 - The details panel is on the right (inspector pattern) and moves to the bottom on mobile; the OpenStreetMap attribution always stays visible.
 - Marker names allow any characters (apostrophes, Cyrillic, etc.); they are shown only through Angular interpolation and canvas labels, so HTML is never executed (no innerHTML).
 - Native confirm for delete: simple and accessible, as the task asked to keep it simple.

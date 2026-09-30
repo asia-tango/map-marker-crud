@@ -10,6 +10,7 @@
     [name]="draft.name"
     [latitude]="draft.latitude"
     [longitude]="draft.longitude"
+    [coordinatesReadonly]="draft.mode === 'create'"
     (saved)="onSaved($event)"
     (cancelled)="onCancelled()"
   ></app-marker-form>
