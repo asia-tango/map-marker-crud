@@ -2,6 +2,8 @@
 
 CRUD for map markers with Angular 22, NGXS and OpenLayers.
 
+**Live demo:** https://asia-tango.github.io/map-marker-crud/
+
 ## Requirements
 
 - Node ^22.22.3, ^24.15.0 or >=26.0.0 (the versions supported by Angular 22)
@@ -20,10 +22,10 @@ npx ng build
 
 - View markers on the map.
 - Select a marker to see its details.
-- Add a marker by clicking the map, with a draft point preview.
+- Add a marker by clicking the map: a green draft point shows where it will be placed (click again to move it); it becomes a marker on Save and disappears on Cancel.
 - Edit a marker.
 - Delete a marker with confirmation.
-- Mobile layout.
+- Mobile layout (below 768px).
 
 ## Key decisions
 
@@ -31,8 +33,9 @@ npx ng build
 - All OpenLayers code lives in one service; components never import OpenLayers.
 - Markers on the map are updated incrementally by id instead of redrawing all of them.
 - The create/edit draft is local UI state with an explicit mode (create | edit), so invalid states are impossible; it is not in the store.
-- Coordinates are stored in degrees and rounded to 6 decimals (about 11 cm): a map click returns about 15 digits, which is false precision.
+- Coordinates are stored in degrees. Map clicks are rounded to 6 decimals (about 11 cm): a click returns about 15 digits, which is false precision.
 - While the form is open, marker clicks are ignored, and while editing the map is locked, so map and marker clicks never replace an open form.
+- Cancel (button, × or Escape) always closes the sidebar, also in edit mode, to keep one predictable rule; Save keeps the marker selected to show the result.
 - In create mode the coordinates come only from map clicks (readonly fields), so the green preview always matches what is saved; in edit mode the map is locked and coordinates are corrected in the fields.
 - The details panel is on the right (inspector pattern) and moves to the bottom on mobile; the OpenStreetMap attribution always stays visible.
 - Marker names allow any characters (apostrophes, Cyrillic, etc.); they are shown only through Angular interpolation and canvas labels, so HTML is never executed (no innerHTML).
@@ -52,11 +55,14 @@ State is in memory only, so a page reload resets the markers to the mock data (n
 ## With more time
 
 - Persistence via @ngxs/storage-plugin, or a backend through NGXS actions.
-- Reverse geocoding to prefill the marker name.
+- An accessible marker list synced with the map: canvas markers can't be reached with a keyboard or a screen reader.
+- Loading only the markers in the visible part of the map, for large datasets.
+- Real-time sync: a backend broadcasting the same NGXS actions over WebSocket.
+- Store the measurement uncertainty of each clicked point (one map pixel at the current zoom) and show it in the panel.
 - E2E tests (for example, Playwright).
-- Clustering or a WebGL layer, and loading by visible extent, for many markers.
-- A custom confirm dialog with undo.
 
 ## Notes
+
+My background is in metrology, which is why coordinate precision got extra attention (rounding, uncertainty).
 
 Built with AI assistance (Claude Code). I reviewed each step, made the design decisions and ran all checks myself.
